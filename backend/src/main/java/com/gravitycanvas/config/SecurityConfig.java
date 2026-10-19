@@ -68,6 +68,8 @@ public class SecurityConfig {
                 // Shared Task Operations (All Roles: Project Manager, Team Lead, Developer, Tester)
                 .requestMatchers(HttpMethod.GET, "/api/tasks/**").hasAnyRole("PROJECT_MANAGER", "TEAM_LEAD", "TEAM_MEMBER", "TESTER")
                 .requestMatchers(HttpMethod.PUT, "/api/tasks/*/status").hasAnyRole("PROJECT_MANAGER", "TEAM_LEAD", "TEAM_MEMBER", "TESTER")
+                .requestMatchers(HttpMethod.POST, "/api/tasks/*/defibrillate").hasAnyRole("PROJECT_MANAGER", "TEAM_LEAD", "TEAM_MEMBER", "TESTER")
+                .requestMatchers(HttpMethod.POST, "/api/tasks/simulate/**").hasAnyRole("PROJECT_MANAGER", "TEAM_LEAD", "TEAM_MEMBER", "TESTER")
 
                 .anyRequest().authenticated()
             )

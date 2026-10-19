@@ -7,6 +7,13 @@ export interface User {
   role: UserRole | string;
   employeeNo?: string;
   department?: string;
+
+  // Gravitational Load & Burnout Circuit Breaker Metrics
+  activeGravityLoad?: number;
+  activeTasksCount?: number;
+  focusTasksCount?: number;
+  capacityPercentage?: number;
+  burnoutStatus?: 'NORMAL' | 'HEAVY' | 'SUPERNOVA_LOCKED';
 }
 
 export interface CreateUserRequest {

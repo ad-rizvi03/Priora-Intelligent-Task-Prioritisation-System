@@ -50,6 +50,18 @@ public class TaskResponseDto {
     private double environmentMultiplier;
     private String canvasZone; // "FOCUS", "DRIFTING", "ORBIT"
 
+    // --- Domino of the Day (Keystone Task & Reverse Blast Radius) ---
+    private boolean dominoOfDay;
+    private double dominoLeverageScore;
+    private int unblockedTasksCount;
+    private int unblockedEngineersCount;
+    private double releasedGravityPoints;
+
+    // --- Feature 3: Entropy Decay Detector & Zombie Defibrillator ---
+    private double entropyScore;
+    private String entropyLevel; // "FRESH", "STAGNATING", "ZOMBIE_BLOCKER"
+    private boolean defibrillatorAvailable;
+
     public TaskResponseDto() {}
 
     public Long getId() { return id; }
@@ -147,4 +159,29 @@ public class TaskResponseDto {
 
     public String getCanvasZone() { return canvasZone; }
     public void setCanvasZone(String canvasZone) { this.canvasZone = canvasZone; }
+
+    public boolean isDominoOfDay() { return dominoOfDay; }
+    public void setDominoOfDay(boolean dominoOfDay) { this.dominoOfDay = dominoOfDay; }
+
+    public double getDominoLeverageScore() { return dominoLeverageScore; }
+    public void setDominoLeverageScore(double dominoLeverageScore) { this.dominoLeverageScore = dominoLeverageScore; }
+
+    public int getUnblockedTasksCount() { return unblockedTasksCount; }
+    public void setUnblockedTasksCount(int unblockedTasksCount) { this.unblockedTasksCount = unblockedTasksCount; }
+
+    public int getUnblockedEngineersCount() { return unblockedEngineersCount; }
+    public void setUnblockedEngineersCount(int unblockedEngineersCount) { this.unblockedEngineersCount = unblockedEngineersCount; }
+
+    public double getReleasedGravityPoints() { return releasedGravityPoints; }
+    public void setReleasedGravityPoints(double releasedGravityPoints) { this.releasedGravityPoints = releasedGravityPoints; }
+
+    public double getEntropyScore() { return entropyScore; }
+    public void setEntropyScore(double entropyScore) { this.entropyScore = entropyScore; }
+
+    public String getEntropyLevel() { return entropyLevel; }
+    public void setEntropyLevel(String entropyLevel) { this.entropyLevel = entropyLevel; }
+
+    public boolean isDefibrillatorAvailable() { return defibrillatorAvailable; }
+    public void setDefibrillatorAvailable(boolean defibrillatorAvailable) { this.defibrillatorAvailable = defibrillatorAvailable; }
 }
+

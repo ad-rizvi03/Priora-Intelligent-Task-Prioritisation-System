@@ -75,16 +75,53 @@ import { User } from '../../models/user.model';
 
           </div>
 
-          <!-- Assignee Selection (DEVELOPERS & TESTERS) -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Assignee (Developer / Tester) *</label>
-            <select [(ngModel)]="assigneeId" name="assigneeId"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white">
+          <!-- Assignee Selection (DEVELOPERS & TESTERS) with Gravitational Load Status -->
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-slate-700">Assignee (Developer / Tester) *</label>
+            <select [(ngModel)]="assigneeId" name="assigneeId" (change)="onAssigneeChange()"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white font-medium">
               <option [ngValue]="null">-- Select Assignee --</option>
               <option *ngFor="let user of getAssignableUsers()" [value]="user.id">
-                {{ user.fullName }} ({{ user.role === 'ROLE_TESTER' ? 'Tester' : 'Developer' }} • {{ user.department || 'Engineering' }})
+                {{ user.fullName }} ({{ user.role === 'ROLE_TESTER' ? 'Tester' : 'Developer' }} • {{ user.activeGravityLoad || 0 }} pts | {{ user.capacityPercentage || 0 }}% load {{ user.burnoutStatus === 'SUPERNOVA_LOCKED' ? '🔴 SUPERNOVA' : user.burnoutStatus === 'HEAVY' ? '🟡 HEAVY' : '🟢 NORMAL' }})
               </option>
             </select>
+
+            <!-- Circuit Breaker Warning & Alternative Recommendation Banner -->
+            <div *ngIf="isAssigneeOverloaded()" class="p-3.5 bg-rose-50 border border-rose-200 rounded-xl space-y-2.5 text-xs">
+              <div class="flex items-start gap-2 text-rose-900 font-bold">
+                <span class="text-base shrink-0">🛡️</span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span>Gravitational Circuit Breaker Active</span>
+                    <span class="bg-rose-600 text-white text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full">
+                      Supernova Event Horizon ({{ getSelectedAssignee()?.capacityPercentage }}%)
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-rose-700 font-normal mt-0.5">
+                    <strong>{{ getSelectedAssignee()?.fullName }}</strong> has reached maximum gravitational capacity with <strong>{{ getSelectedAssignee()?.activeGravityLoad }} active gravity points</strong>. Assigning further tasks will trigger delivery failure and engineer burnout.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Recommended Alternative Quick-Assign Action -->
+              <div *ngIf="getRecommendedAlternative() as alt" class="bg-white/90 border border-rose-200/80 rounded-lg p-2.5 flex items-center justify-between">
+                <div class="text-[11px]">
+                  <span class="text-slate-500 font-medium">Recommended Alternative:</span>
+                  <span class="font-bold text-slate-900 ml-1.5">{{ alt.fullName }}</span>
+                  <span class="text-emerald-600 font-semibold ml-1">({{ alt.activeGravityLoad || 0 }} pts • {{ alt.capacityPercentage || 0 }}% load)</span>
+                </div>
+                <button type="button" (click)="selectAlternative(alt)" 
+                        class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] rounded-md transition-all shadow-xs">
+                  Assign to {{ alt.fullName.split(' ')[0] }} Instead
+                </button>
+              </div>
+
+              <!-- Emergency Manager Override Toggle -->
+              <label class="flex items-center gap-2 text-[11px] text-rose-800 font-bold cursor-pointer pt-1 border-t border-rose-100">
+                <input type="checkbox" [(ngModel)]="overrideCircuitBreaker" name="overrideCircuitBreaker" class="rounded border-rose-300 text-rose-600 focus:ring-rose-500 w-3.5 h-3.5">
+                <span>Emergency Manager Override (Bypass Circuit Breaker at Delivery Risk)</span>
+              </label>
+            </div>
           </div>
 
           <!-- TEAM LEAD CUSTOM DEPENDENCY WEIGHT SELECTION -->
@@ -175,10 +212,11 @@ import { User } from '../../models/user.model';
                     class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-medium transition-all">
               Cancel
             </button>
-            <button type="submit" [disabled]="!title || loading"
+            <button type="submit" [disabled]="!title || loading || (isAssigneeOverloaded() && !overrideCircuitBreaker)"
                     class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2">
               <span *ngIf="loading" class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-              Create Task Card
+              <span *ngIf="isAssigneeOverloaded() && !overrideCircuitBreaker">Blocked by Circuit Breaker</span>
+              <span *ngIf="!isAssigneeOverloaded() || overrideCircuitBreaker">Create Task Card</span>
             </button>
           </div>
 
@@ -197,6 +235,7 @@ export class CreateTaskModalComponent implements OnInit {
   deadlineInput = '';
   minDateTimeInput = '';
   assigneeId: number | null = null;
+  overrideCircuitBreaker = false;
   
   customFactorApplied = false;
 
@@ -229,6 +268,32 @@ export class CreateTaskModalComponent implements OnInit {
 
   getAssignableUsers(): User[] {
     return this.taskService.users().filter(u => u.role === 'ROLE_TEAM_MEMBER' || u.role === 'ROLE_TESTER');
+  }
+
+  onAssigneeChange(): void {
+    this.overrideCircuitBreaker = false;
+  }
+
+  getSelectedAssignee(): User | undefined {
+    if (!this.assigneeId) return undefined;
+    return this.taskService.users().find(u => u.id === Number(this.assigneeId));
+  }
+
+  isAssigneeOverloaded(): boolean {
+    const user = this.getSelectedAssignee();
+    return user?.burnoutStatus === 'SUPERNOVA_LOCKED';
+  }
+
+  getRecommendedAlternative(): User | undefined {
+    const currentId = Number(this.assigneeId);
+    return this.getAssignableUsers()
+      .filter(u => u.id !== currentId && u.burnoutStatus !== 'SUPERNOVA_LOCKED')
+      .sort((a, b) => (a.activeGravityLoad || 0) - (b.activeGravityLoad || 0))[0];
+  }
+
+  selectAlternative(user: User): void {
+    this.assigneeId = user.id;
+    this.overrideCircuitBreaker = false;
   }
 
   isParentSelected(taskId: number): boolean {
@@ -282,7 +347,8 @@ export class CreateTaskModalComponent implements OnInit {
       customFactorApplied: this.customFactorApplied,
       deadline: new Date(this.deadlineInput).toISOString(),
       assigneeId: this.assigneeId ? Number(this.assigneeId) : undefined,
-      parentTaskIds: this.selectedParentTaskIds
+      parentTaskIds: this.selectedParentTaskIds,
+      overrideCircuitBreaker: this.overrideCircuitBreaker
     };
 
     this.taskService.createTask(request).subscribe({
@@ -294,3 +360,4 @@ export class CreateTaskModalComponent implements OnInit {
     });
   }
 }
+

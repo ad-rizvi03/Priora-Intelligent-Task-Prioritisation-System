@@ -268,6 +268,7 @@ import { CreateUserRequest } from '../../models/user.model';
                   <th class="p-3">Employee No</th>
                   <th class="p-3">Department</th>
                   <th class="p-3">Assigned Role</th>
+                  <th class="p-3">Gravitational Capacity & Workload Defense</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
@@ -285,6 +286,28 @@ import { CreateUserRequest } from '../../models/user.model';
                     <span [class]="getRoleBadgeClasses(user.role)" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase">
                       {{ getRoleLabel(user.role) }}
                     </span>
+                  </td>
+                  <td class="p-3">
+                    <div class="space-y-1.5 min-w-[220px]">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="font-bold text-slate-800">
+                          {{ user.activeGravityLoad || 0 }} pts
+                          <span class="text-slate-400 font-normal">({{ user.activeTasksCount || 0 }} active)</span>
+                        </span>
+                        <span [class]="getBurnoutBadgeClasses(user.burnoutStatus)" class="text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase">
+                          {{ getBurnoutLabel(user.burnoutStatus) }} ({{ user.capacityPercentage || 0 }}%)
+                        </span>
+                      </div>
+                      <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                        <div class="h-full rounded-full transition-all duration-500"
+                             [style.width.%]="(user.capacityPercentage || 0) > 100 ? 100 : (user.capacityPercentage || 0)"
+                             [ngClass]="{
+                               'bg-emerald-500': user.burnoutStatus === 'NORMAL' || !user.burnoutStatus,
+                               'bg-amber-500': user.burnoutStatus === 'HEAVY',
+                               'bg-rose-500 animate-pulse': user.burnoutStatus === 'SUPERNOVA_LOCKED'
+                             }"></div>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -584,4 +607,21 @@ export class UserManagementComponent implements OnInit {
       default: return 'bg-amber-50 text-amber-700 border-amber-200';
     }
   }
+
+  getBurnoutLabel(status?: string): string {
+    switch (status) {
+      case 'SUPERNOVA_LOCKED': return 'Supernova Lock';
+      case 'HEAVY': return 'Heavy Load';
+      default: return 'Normal';
+    }
+  }
+
+  getBurnoutBadgeClasses(status?: string): string {
+    switch (status) {
+      case 'SUPERNOVA_LOCKED': return 'bg-rose-50 text-rose-700 border-rose-300 font-extrabold';
+      case 'HEAVY': return 'bg-amber-50 text-amber-700 border-amber-300';
+      default: return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    }
+  }
 }
+

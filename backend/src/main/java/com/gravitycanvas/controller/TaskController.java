@@ -121,4 +121,39 @@ public class TaskController {
         TaskResponseDto updated = taskService.pingBlocker(id);
         return ResponseEntity.ok(updated);
     }
+
+    /**
+     * POST /api/tasks/{id}/defibrillate
+     * Feature 3: The 1-Click Ticket Defibrillator
+     * Allowed Roles: All authenticated team members & leads
+     */
+    @PostMapping("/{id}/defibrillate")
+    public ResponseEntity<TaskResponseDto> defibrillateTask(@PathVariable Long id, @RequestBody(required = false) DefibrillateTaskRequest request) {
+        TaskResponseDto updated = taskService.defibrillateTask(id, request);
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
+     * POST /api/tasks/simulate
+     * Feature 4: What-If Sprint Time Machine & Cascade Simulator
+     */
+    @PostMapping("/simulate")
+    public ResponseEntity<SprintSimulationResponse> simulateSprint(@RequestBody(required = false) SprintSimulationRequest request) {
+        return ResponseEntity.ok(taskService.simulateSprintScenario(request));
+    }
+
+    /**
+     * POST /api/tasks/simulate/apply
+     * Feature 4: 1-Click Algorithmic Mitigation Application
+     */
+    @PostMapping("/simulate/apply")
+    public ResponseEntity<List<TaskResponseDto>> applyMitigation(@RequestBody(required = false) SprintSimulationRequest request) {
+        return ResponseEntity.ok(taskService.applySimulationMitigation(request));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<java.util.Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(java.util.Map.of("message", ex.getMessage()));
+    }
 }
+

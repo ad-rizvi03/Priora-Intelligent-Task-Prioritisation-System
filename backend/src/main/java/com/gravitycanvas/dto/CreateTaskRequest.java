@@ -11,6 +11,7 @@ public class CreateTaskRequest {
     private java.time.LocalDateTime deadline;
     private List<Long> parentTaskIds;
     private boolean customFactorApplied;
+    private boolean overrideCircuitBreaker;
 
     public CreateTaskRequest() {}
 
@@ -34,4 +35,7 @@ public class CreateTaskRequest {
 
     public boolean isCustomFactorApplied() { return customFactorApplied; }
     public void setCustomFactorApplied(boolean customFactorApplied) { this.customFactorApplied = customFactorApplied; }
+
+    public boolean isOverrideCircuitBreaker() { return overrideCircuitBreaker; }
+    public void setOverrideCircuitBreaker(boolean overrideCircuitBreaker) { this.overrideCircuitBreaker = overrideCircuitBreaker; }
 }

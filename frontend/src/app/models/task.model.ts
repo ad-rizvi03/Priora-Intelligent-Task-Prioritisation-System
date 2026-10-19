@@ -40,6 +40,23 @@ export interface Task {
   customFactorScore?: number;
   environmentMultiplier: number;
   canvasZone: CanvasZone;
+
+  // Domino of the Day (Leverage & Blast Radius)
+  dominoOfDay?: boolean;
+  dominoLeverageScore?: number;
+  unblockedTasksCount?: number;
+  unblockedEngineersCount?: number;
+  releasedGravityPoints?: number;
+
+  // Feature 3: Entropy Decay Detector & Zombie Defibrillator
+  entropyScore?: number;
+  entropyLevel?: 'FRESH' | 'STAGNATING' | 'ZOMBIE_BLOCKER';
+  defibrillatorAvailable?: boolean;
+}
+
+export interface DefibrillateTaskRequest {
+  action: 'SPLIT' | 'SHED_GRAVITY' | 'SMART_PASS' | 'DISSOLVE';
+  targetAssigneeId?: number;
 }
 
 export interface CreateTaskRequest {
@@ -50,4 +67,11 @@ export interface CreateTaskRequest {
   assigneeId?: number;
   deadline: string;
   parentTaskIds?: number[];
+  overrideCircuitBreaker?: boolean;
 }
+
+export interface ReassignTaskRequest {
+  assigneeId: number | null;
+  overrideCircuitBreaker?: boolean;
+}
+

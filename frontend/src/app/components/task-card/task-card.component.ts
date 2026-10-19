@@ -18,9 +18,18 @@ import { AuthService } from '../../services/auth.service';
     <div [class]="getCardContainerClasses()"
          class="bg-white border rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between h-[460px] min-h-[460px] w-full">
       
-      <!-- Top Bar: Environment, Overdue Badge & Gravity Score -->
+      <!-- Top Bar: Environment, Overdue Badge, Domino Badge & Gravity Score -->
       <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 h-10">
         <div class="flex flex-wrap items-center gap-1.5 overflow-hidden">
+          <!-- Domino Keystone Badge -->
+          <span *ngIf="task.dominoOfDay && task.status !== 'DONE'" 
+                class="bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-amber-300 shadow-xs flex items-center gap-1">
+            <svg class="w-3 h-3 text-slate-950" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+            </svg>
+            DOMINO KEYSTONE
+          </span>
+
           <span [class]="getEnvBadgeClasses(task.environment)" class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded border">
             {{ task.environment }} ({{ task.environmentMultiplier }}x)
           </span>
@@ -40,6 +49,18 @@ import { AuthService } from '../../services/auth.service';
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             Pinged Active
+          </span>
+
+          <!-- Feature 3: Zombie / Stagnation Entropy Badge -->
+          <span *ngIf="task.entropyLevel === 'ZOMBIE_BLOCKER' && task.status !== 'DONE'"
+                title="Zombie Blocker Alert: Stalled task with high entropy causing delivery drag"
+                class="bg-purple-900 text-purple-200 border border-purple-500 text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-2xs animate-pulse">
+            🧟 {{ task.entropyScore }}% Entropy
+          </span>
+          <span *ngIf="task.entropyLevel === 'STAGNATING' && task.status !== 'DONE'"
+                title="Stagnating Task: Low velocity relative to lifespan"
+                class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+            ⚠️ {{ task.entropyScore }}%
           </span>
         </div>
 
@@ -63,7 +84,10 @@ import { AuthService } from '../../services/auth.service';
       <!-- Formula Factors Breakdown Matrix -->
       <div class="h-[170px] min-h-[170px] bg-slate-50 rounded-xl p-3 border border-slate-100/90 grid grid-cols-2 gap-2 text-[11px] content-between">
         <div>
-          <span class="text-slate-400 font-medium block text-[10px] uppercase">Blast Radius</span>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400 font-medium block text-[10px] uppercase">Blast Radius</span>
+            <span *ngIf="task.dominoOfDay && task.status !== 'DONE'" class="text-amber-600 font-black text-[9px] uppercase tracking-wider">★ Keystone</span>
+          </div>
           <span class="font-bold text-slate-800">{{ task.dependencyScore }} pts</span>
           <span class="text-[10px] text-slate-500 block truncate">({{ task.directBlockedCount }} direct / {{ task.indirectBlockedCount }} indirect)</span>
         </div>
@@ -163,6 +187,14 @@ import { AuthService } from '../../services/auth.service';
           <option value="DONE">DONE</option>
         </select>
 
+        <!-- Feature 3: Defibrillator Trigger (Available to all team roles for Stagnating & Zombie Blockers) -->
+        <button *ngIf="task.defibrillatorAvailable && task.status !== 'DONE'"
+                (click)="taskService.openDefibrillatorModal(task)"
+                title="Revive or Dissolve Stagnating Blocker"
+                class="px-2 py-1.5 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white rounded-lg text-xs font-black shadow-xs transition-all flex items-center gap-1 shrink-0 cursor-pointer">
+          <span>⚡</span> Defib
+        </button>
+
         <!-- Quick Action Buttons (Team Lead / Project Manager Only) -->
         <div *ngIf="authService.hasLeadPermissions()" class="flex items-center gap-1.5 shrink-0">
           
@@ -204,6 +236,12 @@ export class TaskCardComponent {
   getCardContainerClasses(): string {
     if (this.task.status === 'DONE') {
       return 'border-emerald-200 bg-emerald-50/20';
+    }
+    if (this.task.dominoOfDay) {
+      return 'border-amber-400 border-l-4 border-l-amber-500 ring-2 ring-amber-300/70 shadow-lg shadow-amber-500/10 bg-gradient-to-b from-amber-50/25 via-white to-white';
+    }
+    if (this.task.entropyLevel === 'ZOMBIE_BLOCKER') {
+      return 'border-purple-400 border-l-4 border-l-purple-600 ring-2 ring-purple-300/60 shadow-lg shadow-purple-500/10 bg-gradient-to-b from-purple-50/25 via-white to-white';
     }
     switch (this.task.canvasZone) {
       case 'FOCUS': return 'border-indigo-300 border-l-4 border-l-indigo-600';

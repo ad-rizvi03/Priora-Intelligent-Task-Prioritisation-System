@@ -8,6 +8,13 @@ public class UserDto {
     private String employeeNo;
     private String department;
 
+    // Burnout Circuit Breaker & Gravitational Load Metrics
+    private double activeGravityLoad;
+    private int activeTasksCount;
+    private int focusTasksCount;
+    private double capacityPercentage;
+    private String burnoutStatus; // "NORMAL", "HEAVY", "SUPERNOVA_LOCKED"
+
     public UserDto() {}
 
     public UserDto(Long id, String username, String fullName, String role) {
@@ -43,4 +50,20 @@ public class UserDto {
 
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
+
+    public double getActiveGravityLoad() { return activeGravityLoad; }
+    public void setActiveGravityLoad(double activeGravityLoad) { this.activeGravityLoad = activeGravityLoad; }
+
+    public int getActiveTasksCount() { return activeTasksCount; }
+    public void setActiveTasksCount(int activeTasksCount) { this.activeTasksCount = activeTasksCount; }
+
+    public int getFocusTasksCount() { return focusTasksCount; }
+    public void setFocusTasksCount(int focusTasksCount) { this.focusTasksCount = focusTasksCount; }
+
+    public double getCapacityPercentage() { return capacityPercentage; }
+    public void setCapacityPercentage(double capacityPercentage) { this.capacityPercentage = capacityPercentage; }
+
+    public String getBurnoutStatus() { return burnoutStatus; }
+    public void setBurnoutStatus(String burnoutStatus) { this.burnoutStatus = burnoutStatus; }
 }
+

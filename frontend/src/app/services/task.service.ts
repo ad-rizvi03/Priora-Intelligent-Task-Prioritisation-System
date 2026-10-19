@@ -5,6 +5,26 @@ import { Task, CreateTaskRequest, TaskStatus } from '../models/task.model';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
 
+export interface SprintSimulationRequest {
+  delayedTaskId?: number;
+  delayHours: number;
+  unavailableUserId?: number;
+}
+
+export interface SprintSimulationResponse {
+  projectedFailureRisk: number;
+  riskLevel: 'NOMINAL' | 'ELEVATED' | 'CRITICAL_COLLAPSE';
+  dragIncreasePoints: number;
+  impactedTasksCount: number;
+  overdueTasksCount: number;
+  cascadeSteps: string[];
+  recommendedMitigationPlan: string;
+  suggestedReassignmentTaskId?: number;
+  suggestedReassignmentUserId?: number;
+  suggestedReassignmentUserName?: string;
+  suggestedDeadlineExtensionHours?: number;
+}
+
 /**
  * Task Management Service powered by Angular 16 Signals.
  * Manages canvas zone computations, modal states (Deadline, Reassign), and Developer Notification Streams.
@@ -25,6 +45,8 @@ export class TaskService {
   // Modal Signals for Deadline & Reassign Modals
   public selectedTaskForDeadline = signal<Task | null>(null);
   public selectedTaskForReassign = signal<Task | null>(null);
+  public selectedTaskForDefibrillator = signal<Task | null>(null);
+  public simulationModalOpen = signal<boolean>(false);
 
   // --- COMPUTED SIGNALS FOR 3 CANVAS ZONES ---
   public focusZoneTasks = computed(() => 
@@ -121,17 +143,17 @@ export class TaskService {
     );
   }
 
-  public reassignTask(id: number, assigneeId: number | null): Observable<Task> {
+  public reassignTask(id: number, assigneeId: number | null, overrideCircuitBreaker: boolean = false): Observable<Task> {
     return this.http.put<Task>(
       `${this.apiUrl}/tasks/${id}/reassign`,
-      { assigneeId },
+      { assigneeId, overrideCircuitBreaker },
       { headers: this.authService.getHeaders() }
     ).pipe(
       tap(() => {
         this.closeReassignModal();
         this.loadTasks();
       }),
-      catchError(err => this.handleError(err, '403 Forbidden: Only Managers can reassign tasks.'))
+      catchError(err => this.handleError(err, 'Failed to reassign task.'))
     );
   }
 
@@ -157,9 +179,67 @@ export class TaskService {
     );
   }
 
+  // --- Feature 3: Defibrillator Modal Controls & Action API ---
+  public openDefibrillatorModal(task: Task): void {
+    this.selectedTaskForDefibrillator.set(task);
+  }
+
+  public closeDefibrillatorModal(): void {
+    this.selectedTaskForDefibrillator.set(null);
+  }
+
+  public defibrillateTask(id: number, action: string, targetAssigneeId?: number): Observable<Task> {
+    return this.http.post<Task>(
+      `${this.apiUrl}/tasks/${id}/defibrillate`,
+      { action, targetAssigneeId },
+      { headers: this.authService.getHeaders() }
+    ).pipe(
+      tap(() => {
+        this.closeDefibrillatorModal();
+        this.loadTasks();
+      }),
+      catchError(err => this.handleError(err, 'Failed to defibrillate task.'))
+    );
+  }
+
+  // --- Feature 4: What-If Sprint Time Machine & Cascade Simulator ---
+  public openSimulationModal(): void {
+    this.simulationModalOpen.set(true);
+  }
+
+  public closeSimulationModal(): void {
+    this.simulationModalOpen.set(false);
+  }
+
+  public simulateSprint(req: SprintSimulationRequest): Observable<SprintSimulationResponse> {
+    return this.http.post<SprintSimulationResponse>(
+      `${this.apiUrl}/tasks/simulate`,
+      req,
+      { headers: this.authService.getHeaders() }
+    ).pipe(
+      catchError(err => this.handleError(err, 'Failed to run sprint simulation.'))
+    );
+  }
+
+  public applyMitigation(req: SprintSimulationRequest): Observable<Task[]> {
+    return this.http.post<Task[]>(
+      `${this.apiUrl}/tasks/simulate/apply`,
+      req,
+      { headers: this.authService.getHeaders() }
+    ).pipe(
+      tap((tasks) => {
+        this.tasks.set(tasks);
+        this.closeSimulationModal();
+      }),
+      catchError(err => this.handleError(err, 'Failed to apply mitigation plan.'))
+    );
+  }
+
   private handleError(err: any, defaultMsg: string): Observable<never> {
     if (err.status === 403) {
       this.errorMessage.set('Access Denied (403 Forbidden): Manager authorization required.');
+    } else if (err.error && err.error.message) {
+      this.errorMessage.set(err.error.message);
     } else {
       this.errorMessage.set(defaultMsg);
     }
