@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-export type ThemeMode = 'light' | 'midnight' | 'deep-space';
+export type ThemeMode = 'light' | 'deep-space';
 
 export interface ThemeOption {
   id: ThemeMode;
@@ -17,8 +17,7 @@ export class ThemeService {
 
   public readonly themeOptions: ThemeOption[] = [
     { id: 'light', name: 'Light', icon: '☀️', previewBg: 'bg-white' },
-    { id: 'midnight', name: 'Midnight', icon: '🌙', previewBg: 'bg-slate-900' },
-    { id: 'deep-space', name: 'Deep Space', icon: '🚀', previewBg: 'bg-black' }
+    { id: 'deep-space', name: 'Deep Space', icon: '🚀', previewBg: 'bg-slate-950' }
   ];
 
   constructor() {
@@ -34,20 +33,17 @@ export class ThemeService {
   }
 
   public cycleTheme(): void {
-    const current = this.theme();
-    if (current === 'light') this.setTheme('midnight');
-    else if (current === 'midnight') this.setTheme('deep-space');
-    else this.setTheme('light');
+    this.setTheme(this.theme() === 'light' ? 'deep-space' : 'light');
   }
 
   private getInitialTheme(): ThemeMode {
     try {
-      const saved = localStorage.getItem('priora-theme') as ThemeMode;
-      if (saved === 'light' || saved === 'midnight' || saved === 'deep-space') {
+      const saved = localStorage.getItem('priora-theme');
+      if (saved === 'light' || saved === 'deep-space') {
         return saved;
       }
     } catch {}
-    return 'midnight'; // Default to sleek Midnight dark
+    return 'deep-space'; // Default to Deep Space
   }
 
   private applyTheme(mode: ThemeMode): void {
@@ -56,9 +52,6 @@ export class ThemeService {
 
     if (mode === 'light') {
       root.classList.remove('dark');
-      root.classList.remove('deep-space');
-    } else if (mode === 'midnight') {
-      root.classList.add('dark');
       root.classList.remove('deep-space');
     } else {
       root.classList.add('dark');

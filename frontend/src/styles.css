@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 /* ============================================================ */
-/* PRIORA DYNAMIC THEME ENGINE (Light, Midnight, Deep Space)   */
+/* PRIORA DYNAMIC THEME ENGINE (Light & Deep Space)            */
 /* ============================================================ */
 
 /* 1. LIGHT THEME (Clean Corporate Light) */
@@ -28,28 +28,8 @@
   --scrollbar-track: #F1F5F9;
 }
 
-/* 2. MIDNIGHT THEME (Executive Dark Slate) */
-[data-theme="midnight"], .dark:not([data-theme="deep-space"]) {
-  --bg-app: #0B0F17;
-  --bg-header: rgba(15, 23, 42, 0.95);
-  --bg-card: #151D2C;
-  --bg-card-subtle: #1E293B;
-  --bg-card-inner: #0F172A;
-  --border-primary: #27354A;
-  --border-subtle: #1E293B;
-  --text-heading: #F8FAFC;
-  --text-body: #CBD5E1;
-  --text-muted: #94A3B8;
-  --nav-active-bg: #1E293B;
-  --nav-active-text: #818CF8;
-  --nav-active-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
-  --input-bg: #0F172A;
-  --scrollbar-thumb: #334155;
-  --scrollbar-track: #0B0F17;
-}
-
-/* 3. DEEP SPACE THEME (Cosmic Obsidian & Neon Orbit) */
-[data-theme="deep-space"] {
+/* 2. DEEP SPACE THEME (Cosmic Obsidian & Neon Orbit) */
+[data-theme="deep-space"], .dark {
   --bg-app: #030712;
   --bg-header: rgba(3, 7, 18, 0.96);
   --bg-card: #0D1117;
