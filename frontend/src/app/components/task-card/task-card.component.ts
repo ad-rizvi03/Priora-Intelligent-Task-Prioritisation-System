@@ -16,10 +16,10 @@ import { AuthService } from '../../services/auth.service';
   imports: [CommonModule, FormsModule],
   template: `
     <div [class]="getCardContainerClasses()"
-         class="bg-white border rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between h-[460px] min-h-[460px] w-full">
+         class="theme-card border rounded-2xl p-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between h-[460px] min-h-[460px] w-full">
       
       <!-- Top Bar: Environment, Overdue Badge, Domino Badge & Gravity Score -->
-      <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 h-10">
+      <div class="flex items-center justify-between gap-2 border-b theme-border-subtle pb-3 h-10">
         <div class="flex flex-wrap items-center gap-1.5 overflow-hidden">
           <!-- Domino Keystone Badge -->
           <span *ngIf="task.dominoOfDay && task.status !== 'DONE'" 
@@ -35,8 +35,8 @@ import { AuthService } from '../../services/auth.service';
           </span>
 
           <span *ngIf="task.overdue && task.status !== 'DONE'" 
-                class="bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-            <svg class="w-3 h-3 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="bg-rose-500/15 text-rose-500 border border-rose-500/30 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+            <svg class="w-3 h-3 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             Overdue
@@ -54,92 +54,92 @@ import { AuthService } from '../../services/auth.service';
           <!-- Feature 3: Zombie / Stagnation Entropy Badge -->
           <span *ngIf="task.entropyLevel === 'ZOMBIE_BLOCKER' && task.status !== 'DONE'"
                 title="Zombie Blocker Alert: Stalled task with high entropy causing delivery drag"
-                class="bg-purple-900 text-purple-200 border border-purple-500 text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-2xs animate-pulse">
+                class="bg-purple-900/80 text-purple-200 border border-purple-500 text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-2xs animate-pulse">
             🧟 {{ task.entropyScore }}% Entropy
           </span>
           <span *ngIf="task.entropyLevel === 'STAGNATING' && task.status !== 'DONE'"
                 title="Stagnating Task: Low velocity relative to lifespan"
-                class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
             ⚠️ {{ task.entropyScore }}%
           </span>
         </div>
 
         <!-- Gravity Score Display -->
-        <div class="text-right flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-xl shrink-0">
-          <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Score</span>
-          <span class="text-sm font-extrabold text-slate-900 leading-none">{{ task.totalGravityScore }}</span>
+        <div class="text-right flex items-center gap-1.5 theme-inner border theme-border-subtle px-2.5 py-1 rounded-xl shrink-0">
+          <span class="text-[10px] theme-text-muted font-bold uppercase tracking-wider">Score</span>
+          <span class="text-sm font-extrabold theme-text-heading leading-none">{{ task.totalGravityScore }}</span>
         </div>
       </div>
 
       <!-- Task Title & Description -->
       <div class="h-[60px] min-h-[60px] space-y-1 flex flex-col justify-center">
-        <h3 class="text-sm font-bold text-slate-900 tracking-tight leading-snug line-clamp-1" [title]="'#' + task.id + ' - ' + task.title">
+        <h3 class="text-sm font-bold theme-text-heading tracking-tight leading-snug line-clamp-1" [title]="'#' + task.id + ' - ' + task.title">
           #{{ task.id }} - {{ task.title }}
         </h3>
-        <p class="text-xs text-slate-500 font-normal leading-relaxed line-clamp-1">
+        <p class="text-xs theme-text-muted font-normal leading-relaxed line-clamp-1">
           {{ task.description || 'No additional description provided.' }}
         </p>
       </div>
 
       <!-- Formula Factors Breakdown Matrix -->
-      <div class="h-[170px] min-h-[170px] bg-slate-50 rounded-xl p-3 border border-slate-100/90 grid grid-cols-2 gap-2 text-[11px] content-between">
+      <div class="h-[170px] min-h-[170px] theme-inner rounded-xl p-3 border theme-border-subtle grid grid-cols-2 gap-2 text-[11px] content-between">
         <div>
           <div class="flex items-center justify-between">
-            <span class="text-slate-400 font-medium block text-[10px] uppercase">Blast Radius</span>
-            <span *ngIf="task.dominoOfDay && task.status !== 'DONE'" class="text-amber-600 font-black text-[9px] uppercase tracking-wider">★ Keystone</span>
+            <span class="theme-text-muted font-medium block text-[10px] uppercase">Blast Radius</span>
+            <span *ngIf="task.dominoOfDay && task.status !== 'DONE'" class="text-amber-500 font-black text-[9px] uppercase tracking-wider">★ Keystone</span>
           </div>
-          <span class="font-bold text-slate-800">{{ task.dependencyScore }} pts</span>
-          <span class="text-[10px] text-slate-500 block truncate">({{ task.directBlockedCount }} direct / {{ task.indirectBlockedCount }} indirect)</span>
+          <span class="font-bold theme-text-heading">{{ task.dependencyScore }} pts</span>
+          <span class="text-[10px] theme-text-muted block truncate">({{ task.directBlockedCount }} direct / {{ task.indirectBlockedCount }} indirect)</span>
         </div>
 
         <div>
-          <span class="text-slate-400 font-medium block text-[10px] uppercase">Deadline Proximity</span>
-          <span class="font-bold text-slate-800">{{ task.deadlineProximityScore }} pts</span>
-          <span [class]="task.overdue ? 'text-rose-600 font-semibold' : 'text-slate-500'" class="text-[10px] block truncate">
+          <span class="theme-text-muted font-medium block text-[10px] uppercase">Deadline Proximity</span>
+          <span class="font-bold theme-text-heading">{{ task.deadlineProximityScore }} pts</span>
+          <span [class]="task.overdue ? 'text-rose-500 font-semibold' : 'theme-text-muted'" class="text-[10px] block truncate">
             ({{ task.hoursUntilDeadline }}h left)
           </span>
         </div>
 
         <div>
-          <span class="text-slate-400 font-medium block text-[10px] uppercase">Aging / Stagnation</span>
-          <span class="font-bold text-slate-800">{{ task.stagnationScore }} pts</span>
-          <span class="text-[10px] text-slate-500 block truncate">({{ task.hoursInactive }}h inactive)</span>
+          <span class="theme-text-muted font-medium block text-[10px] uppercase">Aging / Stagnation</span>
+          <span class="font-bold theme-text-heading">{{ task.stagnationScore }} pts</span>
+          <span class="text-[10px] theme-text-muted block truncate">({{ task.hoursInactive }}h inactive)</span>
         </div>
 
         <div>
-          <span class="text-slate-400 font-medium block text-[10px] uppercase">Assignee Load</span>
-          <span class="font-bold text-slate-800">{{ task.workloadDensityScore }} pts</span>
-          <span class="text-[10px] text-slate-500 block truncate">({{ task.assigneeActiveTasksCount }} active tasks)</span>
+          <span class="theme-text-muted font-medium block text-[10px] uppercase">Assignee Load</span>
+          <span class="font-bold theme-text-heading">{{ task.workloadDensityScore }} pts</span>
+          <span class="text-[10px] theme-text-muted block truncate">({{ task.assigneeActiveTasksCount }} active tasks)</span>
         </div>
 
         <!-- Custom Factor Row OR Uniform Equal Height Placeholder Slot -->
         <div *ngIf="task.customFactorScore && task.customFactorScore > 0; else emptyCustomSlot" 
-             class="col-span-2 bg-indigo-50/70 p-2 rounded-lg border border-indigo-100/80 flex items-center justify-between">
+             class="col-span-2 bg-indigo-500/10 p-2 rounded-lg border border-indigo-500/20 flex items-center justify-between">
           <div class="truncate">
-            <span class="text-indigo-700 font-bold block text-[10px] uppercase truncate">
+            <span class="text-indigo-400 font-bold block text-[10px] uppercase truncate">
               {{ task.customFactorName || 'Custom Weight' }}
             </span>
-            <span class="text-[10px] text-indigo-600 block leading-tight">(Applied to Task)</span>
+            <span class="text-[10px] text-indigo-400/80 block leading-tight">(Applied to Task)</span>
           </div>
-          <span class="font-extrabold text-indigo-900 text-xs shrink-0">+{{ task.customFactorScore }} pts</span>
+          <span class="font-extrabold text-indigo-400 text-xs shrink-0">+{{ task.customFactorScore }} pts</span>
         </div>
 
         <ng-template #emptyCustomSlot>
-          <div class="col-span-2 bg-slate-100/60 p-2 rounded-lg border border-dashed border-slate-200/60 flex items-center justify-between text-slate-400 text-[10px]">
-            <span class="font-medium text-slate-400">Custom Factor: None</span>
-            <span class="font-semibold text-slate-400">+0 pts</span>
+          <div class="col-span-2 theme-subtle p-2 rounded-lg border border-dashed theme-border-subtle flex items-center justify-between theme-text-muted text-[10px]">
+            <span class="font-medium opacity-70">Custom Factor: None</span>
+            <span class="font-semibold opacity-70">+0 pts</span>
           </div>
         </ng-template>
       </div>
 
       <!-- Assignee & Ping Row (Team Lead / Project Manager Interactive Toggle vs Developer / Tester Read-Only Badge) -->
-      <div class="h-10 pt-2 border-t border-slate-100 flex items-center justify-between">
+      <div class="h-10 pt-2 border-t theme-border-subtle flex items-center justify-between">
         <!-- Assignee Avatar -->
         <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center border border-slate-300">
+          <div class="w-6 h-6 rounded-full theme-subtle theme-text-heading font-bold text-[10px] flex items-center justify-center border theme-border-subtle">
             {{ task.assignee?.fullName?.charAt(0) || 'U' }}
           </div>
-          <span class="text-xs font-semibold text-slate-700 truncate max-w-[120px]">
+          <span class="text-xs font-semibold theme-text-heading truncate max-w-[120px]">
             {{ task.assignee?.fullName || 'Unassigned' }}
           </span>
         </div>
@@ -147,14 +147,14 @@ import { AuthService } from '../../services/auth.service';
         <!-- LEAD ONLY: Interactive Toggle Ping Button -->
         <button *ngIf="authService.hasLeadPermissions()" 
                 (click)="onPingToggle()"
-                [class]="task.pinged ? 'bg-rose-600 text-white font-extrabold shadow-sm' : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/80 font-semibold'"
+                [class]="task.pinged ? 'bg-rose-600 text-white font-extrabold shadow-sm' : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 font-semibold'"
                 title="Toggle Lead Ping Alert for Assignee"
-                class="px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition-all">
-          <svg class="w-3 h-3" [class]="task.pinged ? 'text-white' : 'text-amber-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition-all cursor-pointer">
+          <svg class="w-3 h-3" [class]="task.pinged ? 'text-white' : 'text-amber-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           {{ task.pinged ? 'Pinged ON' : 'Ping' }}
-          <span [class]="task.pinged ? 'bg-white text-rose-700' : 'bg-amber-200 text-amber-900'" class="text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+          <span [class]="task.pinged ? 'bg-white text-rose-700' : 'bg-amber-500/30 text-amber-300'" class="text-[10px] font-bold px-1.5 py-0.2 rounded-full">
             {{ task.pingCount }}
           </span>
         </button>
@@ -162,24 +162,24 @@ import { AuthService } from '../../services/auth.service';
         <!-- DEVELOPER & TESTER READ-ONLY PING BADGE -->
         <div *ngIf="!authService.hasLeadPermissions()"
              title="Ping alerts are issued by Team Leads and Project Managers"
-             [class]="task.pinged ? 'bg-amber-100 text-amber-900 border border-amber-300 font-bold' : 'bg-slate-100 text-slate-500 border border-slate-200 font-medium'"
+             [class]="task.pinged ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold' : 'theme-subtle theme-text-muted border theme-border-subtle font-medium'"
              class="px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 cursor-not-allowed">
-          <svg class="w-3 h-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           Pings
-          <span class="bg-slate-200 text-slate-800 text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+          <span class="theme-inner theme-text-heading text-[10px] font-bold px-1.5 py-0.2 rounded-full border theme-border-subtle">
             {{ task.pingCount }}
           </span>
         </div>
       </div>
 
       <!-- Action Buttons Row -->
-      <div class="h-12 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+      <div class="h-12 pt-2 border-t theme-border-subtle flex items-center justify-between gap-2">
         
         <!-- Status Dropdown -->
         <select [ngModel]="task.status" (ngModelChange)="onStatusChange($event)"
-                class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500 flex-1">
+                class="theme-input rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none flex-1 cursor-pointer">
           <option value="TODO">TODO</option>
           <option value="IN_PROGRESS">IN PROGRESS</option>
           <option value="IN_REVIEW">IN REVIEW</option>
@@ -200,20 +200,20 @@ import { AuthService } from '../../services/auth.service';
           
           <!-- Reassign Trigger -->
           <button (click)="taskService.openReassignModal(task)"
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-all">
+                  class="px-2.5 py-1.5 theme-btn-subtle rounded-lg text-xs font-semibold border transition-all cursor-pointer">
             Reassign
           </button>
 
           <!-- Edit Deadline Trigger -->
           <button (click)="taskService.openDeadlineModal(task)"
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-all">
+                  class="px-2.5 py-1.5 theme-btn-subtle rounded-lg text-xs font-semibold border transition-all cursor-pointer">
             Deadline
           </button>
 
           <!-- Delete -->
           <button (click)="onDelete()"
                   title="Delete Task"
-                  class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition-all flex items-center justify-center">
+                  class="px-2.5 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 text-rose-500 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all flex items-center justify-center cursor-pointer">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -235,18 +235,18 @@ export class TaskCardComponent {
 
   getCardContainerClasses(): string {
     if (this.task.status === 'DONE') {
-      return 'border-emerald-200 bg-emerald-50/20';
+      return 'border-emerald-500/30 bg-emerald-500/5';
     }
     if (this.task.dominoOfDay) {
-      return 'border-amber-400 border-l-4 border-l-amber-500 ring-2 ring-amber-300/70 shadow-lg shadow-amber-500/10 bg-gradient-to-b from-amber-50/25 via-white to-white';
+      return 'border-amber-400 border-l-4 border-l-amber-500 ring-2 ring-amber-400/50 shadow-lg shadow-amber-500/10 bg-gradient-to-b from-amber-500/10 via-transparent to-transparent';
     }
     if (this.task.entropyLevel === 'ZOMBIE_BLOCKER') {
-      return 'border-purple-400 border-l-4 border-l-purple-600 ring-2 ring-purple-300/60 shadow-lg shadow-purple-500/10 bg-gradient-to-b from-purple-50/25 via-white to-white';
+      return 'border-purple-400 border-l-4 border-l-purple-600 ring-2 ring-purple-400/50 shadow-lg shadow-purple-500/10 bg-gradient-to-b from-purple-500/10 via-transparent to-transparent';
     }
     switch (this.task.canvasZone) {
-      case 'FOCUS': return 'border-indigo-300 border-l-4 border-l-indigo-600';
-      case 'DRIFTING': return 'border-slate-300 border-l-4 border-l-amber-500';
-      default: return 'border-slate-200 border-l-4 border-l-slate-400';
+      case 'FOCUS': return 'border-indigo-500/40 border-l-4 border-l-indigo-600 shadow-sm';
+      case 'DRIFTING': return 'border-amber-500/30 border-l-4 border-l-amber-500 shadow-sm';
+      default: return 'border-slate-300 dark:border-slate-700/60 border-l-4 border-l-slate-400 shadow-sm';
     }
   }
 

@@ -15,24 +15,24 @@ import { TaskService } from '../../services/task.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-5 border border-slate-200">
+    <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div class="theme-modal rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 border theme-border">
         
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center justify-between border-b theme-border-subtle pb-3">
           <div>
-            <h2 class="text-base font-bold text-slate-900 tracking-tight">Reassign Task</h2>
-            <p class="text-xs text-slate-500 font-normal">Task #{{ task.id }} - {{ task.title }}</p>
+            <h2 class="text-base font-bold theme-text-heading tracking-tight">Reassign Task</h2>
+            <p class="text-xs theme-text-muted font-normal">Task #{{ task.id }} - {{ task.title }}</p>
           </div>
-          <button (click)="close.emit()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">
+          <button (click)="close.emit()" class="theme-text-muted hover:text-white text-lg font-bold cursor-pointer">
             &times;
           </button>
         </div>
 
         <form (ngSubmit)="onSubmit()" class="space-y-4">
           <div class="space-y-2">
-            <label class="block text-xs font-semibold text-slate-700">Select Assignee (Developer / Tester) *</label>
+            <label class="block text-xs font-semibold theme-text-heading">Select Assignee (Developer / Tester) *</label>
             <select [(ngModel)]="assigneeId" name="assigneeId" (change)="onAssigneeChange()"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white font-medium">
+                    class="w-full theme-input rounded-xl px-3.5 py-2 text-xs focus:outline-none font-medium">
               <option [ngValue]="null">-- Unassigned --</option>
               <option *ngFor="let user of getAssignableUsers()" [value]="user.id">
                 {{ user.fullName }} ({{ user.role === 'ROLE_TESTER' ? 'Tester' : 'Developer' }} • {{ user.activeGravityLoad || 0 }} pts | {{ user.capacityPercentage || 0 }}% load {{ user.burnoutStatus === 'SUPERNOVA_LOCKED' ? '🔴 SUPERNOVA' : user.burnoutStatus === 'HEAVY' ? '🟡 HEAVY' : '🟢 NORMAL' }})
@@ -40,8 +40,8 @@ import { TaskService } from '../../services/task.service';
             </select>
 
             <!-- Circuit Breaker Warning & Alternative Recommendation Banner -->
-            <div *ngIf="isAssigneeOverloaded()" class="p-3.5 bg-rose-50 border border-rose-200 rounded-xl space-y-2.5 text-xs">
-              <div class="flex items-start gap-2 text-rose-900 font-bold">
+            <div *ngIf="isAssigneeOverloaded()" class="p-3.5 bg-rose-500/15 border border-rose-500/30 rounded-xl space-y-2.5 text-xs">
+              <div class="flex items-start gap-2 text-rose-400 font-bold">
                 <span class="text-base shrink-0">🛡️</span>
                 <div>
                   <div class="flex items-center gap-2">
@@ -50,40 +50,40 @@ import { TaskService } from '../../services/task.service';
                       Supernova ({{ getSelectedAssignee()?.capacityPercentage }}%)
                     </span>
                   </div>
-                  <p class="text-[11px] text-rose-700 font-normal mt-0.5">
+                  <p class="text-[11px] text-rose-300 font-normal mt-0.5">
                     <strong>{{ getSelectedAssignee()?.fullName }}</strong> is overloaded with <strong>{{ getSelectedAssignee()?.activeGravityLoad }} active gravity points</strong>. Reassigning this task will risk sprint failure.
                   </p>
                 </div>
               </div>
 
               <!-- Recommended Alternative Quick-Assign Action -->
-              <div *ngIf="getRecommendedAlternative() as alt" class="bg-white/90 border border-rose-200/80 rounded-lg p-2.5 flex items-center justify-between">
+              <div *ngIf="getRecommendedAlternative() as alt" class="theme-card border theme-border-subtle rounded-lg p-2.5 flex items-center justify-between">
                 <div class="text-[11px]">
-                  <span class="text-slate-500 font-medium">Recommended Alternative:</span>
-                  <span class="font-bold text-slate-900 ml-1.5">{{ alt.fullName }}</span>
-                  <span class="text-emerald-600 font-semibold ml-1">({{ alt.activeGravityLoad || 0 }} pts • {{ alt.capacityPercentage || 0 }}% load)</span>
+                  <span class="theme-text-muted font-medium">Recommended Alternative:</span>
+                  <span class="font-bold theme-text-heading ml-1.5">{{ alt.fullName }}</span>
+                  <span class="text-emerald-400 font-semibold ml-1">({{ alt.activeGravityLoad || 0 }} pts • {{ alt.capacityPercentage || 0 }}% load)</span>
                 </div>
                 <button type="button" (click)="selectAlternative(alt)" 
-                        class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] rounded-md transition-all shadow-xs">
+                        class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] rounded-md transition-all shadow-xs cursor-pointer">
                   Assign to {{ alt.fullName.split(' ')[0] }}
                 </button>
               </div>
 
               <!-- Emergency Manager Override Toggle -->
-              <label class="flex items-center gap-2 text-[11px] text-rose-800 font-bold cursor-pointer pt-1 border-t border-rose-100">
+              <label class="flex items-center gap-2 text-[11px] text-rose-400 font-bold cursor-pointer pt-1 border-t border-rose-500/20">
                 <input type="checkbox" [(ngModel)]="overrideCircuitBreaker" name="overrideCircuitBreaker" class="rounded border-rose-300 text-rose-600 focus:ring-rose-500 w-3.5 h-3.5">
                 <span>Emergency Manager Override (Bypass Circuit Breaker)</span>
               </label>
             </div>
           </div>
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t theme-border-subtle">
             <button type="button" (click)="close.emit()"
-                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-medium transition-all">
+                    class="px-4 py-2 theme-btn-subtle rounded-xl text-xs font-medium transition-all cursor-pointer">
               Cancel
             </button>
             <button type="submit" [disabled]="loading || (isAssigneeOverloaded() && !overrideCircuitBreaker)"
-                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2">
+                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer">
               <span *ngIf="loading" class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               <span *ngIf="isAssigneeOverloaded() && !overrideCircuitBreaker">Blocked by Circuit Breaker</span>
               <span *ngIf="!isAssigneeOverloaded() || overrideCircuitBreaker">Confirm Reassignment</span>

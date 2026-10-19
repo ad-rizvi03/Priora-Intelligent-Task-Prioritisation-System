@@ -4,42 +4,168 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
+/* ============================================================ */
+/* PRIORA DYNAMIC THEME ENGINE (Light, Midnight, Deep Space)   */
+/* ============================================================ */
+
+/* 1. LIGHT THEME (Clean Corporate Light) */
+:root, [data-theme="light"] {
+  --bg-app: #F8FAFC;
+  --bg-header: rgba(255, 255, 255, 0.95);
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --bg-card-inner: #F8FAFC;
+  --border-primary: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --text-heading: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --nav-active-bg: #FFFFFF;
+  --nav-active-text: #4F46E5;
+  --nav-active-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --input-bg: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-track: #F1F5F9;
+}
+
+/* 2. MIDNIGHT THEME (Executive Dark Slate) */
+[data-theme="midnight"], .dark:not([data-theme="deep-space"]) {
+  --bg-app: #0B0F17;
+  --bg-header: rgba(15, 23, 42, 0.95);
+  --bg-card: #151D2C;
+  --bg-card-subtle: #1E293B;
+  --bg-card-inner: #0F172A;
+  --border-primary: #27354A;
+  --border-subtle: #1E293B;
+  --text-heading: #F8FAFC;
+  --text-body: #CBD5E1;
+  --text-muted: #94A3B8;
+  --nav-active-bg: #1E293B;
+  --nav-active-text: #818CF8;
+  --nav-active-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  --input-bg: #0F172A;
+  --scrollbar-thumb: #334155;
+  --scrollbar-track: #0B0F17;
+}
+
+/* 3. DEEP SPACE THEME (Cosmic Obsidian & Neon Orbit) */
+[data-theme="deep-space"] {
+  --bg-app: #030712;
+  --bg-header: rgba(3, 7, 18, 0.96);
+  --bg-card: #0D1117;
+  --bg-card-subtle: #161B22;
+  --bg-card-inner: #050810;
+  --border-primary: #30363D;
+  --border-subtle: #21262D;
+  --text-heading: #F0F6FC;
+  --text-body: #C9D1D9;
+  --text-muted: #8B949E;
+  --nav-active-bg: #1F242C;
+  --nav-active-text: #A78BFA;
+  --nav-active-shadow: 0 2px 8px 0 rgba(167, 139, 250, 0.2);
+  --input-bg: #050810;
+  --scrollbar-thumb: #30363D;
+  --scrollbar-track: #030712;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #F8FAFC;
-  color: #334155;
+  background-color: var(--bg-app);
+  color: var(--text-body);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
-  color: #0F172A;
+  color: var(--text-heading);
 }
 
-/* Custom Clean Scrollbar */
+/* Custom Scrollbars tied to active theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  filter: brightness(1.2);
 }
 
-/* Minimal Corporate Card Surface */
-.corporate-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+/* Minimal Corporate Card Surface mapped to active theme */
+.corporate-card, .theme-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+  color: var(--text-body);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.corporate-card:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+
+.theme-subtle {
+  background-color: var(--bg-card-subtle);
+  border-color: var(--border-subtle);
 }
+
+.theme-inner {
+  background-color: var(--bg-card-inner);
+  border-color: var(--border-subtle);
+}
+
+.theme-text-heading {
+  color: var(--text-heading) !important;
+}
+
+.theme-text-body {
+  color: var(--text-body) !important;
+}
+
+.theme-text-muted {
+  color: var(--text-muted) !important;
+}
+
+.theme-border {
+  border-color: var(--border-primary) !important;
+}
+
+.theme-border-subtle {
+  border-color: var(--border-subtle) !important;
+}
+
+.theme-input {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-heading) !important;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.theme-input:focus {
+  border-color: #6366F1 !important;
+  outline: none;
+}
+
+.theme-input option {
+  background-color: var(--bg-card);
+  color: var(--text-heading);
+}
+
+.theme-modal {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-body) !important;
+}
+
+.theme-btn-subtle {
+  background-color: var(--bg-card-subtle) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-body) !important;
+}
+
+.theme-btn-subtle:hover {
+  filter: brightness(1.12);
+}
+

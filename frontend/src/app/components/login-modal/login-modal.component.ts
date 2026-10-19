@@ -13,22 +13,22 @@ import { TaskService } from '../../services/task.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white border border-slate-200 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5">
+    <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="theme-modal border theme-border w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5">
         
         <!-- Modal Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center justify-between border-b theme-border-subtle pb-3">
           <div class="flex items-center gap-2">
             <div class="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
               G
             </div>
-            <h2 class="text-base font-bold text-slate-900">Sign In to Gravity Canvas</h2>
+            <h2 class="text-base font-bold theme-text-heading">Sign In to Gravity Canvas</h2>
           </div>
-          <button (click)="close.emit()" class="text-slate-400 hover:text-slate-700 font-bold text-sm">✕</button>
+          <button (click)="close.emit()" class="theme-text-muted hover:text-white font-bold text-sm cursor-pointer">✕</button>
         </div>
 
         <!-- Error Banner -->
-        <div *ngIf="errorMessage" class="bg-rose-50 border border-rose-200 text-rose-700 px-3.5 py-2 rounded-lg text-xs font-medium">
+        <div *ngIf="errorMessage" class="bg-rose-500/15 border border-rose-500/30 text-rose-400 px-3.5 py-2 rounded-lg text-xs font-medium">
           {{ errorMessage }}
         </div>
 
@@ -36,41 +36,41 @@ import { TaskService } from '../../services/task.service';
         <form (ngSubmit)="onLogin()" class="space-y-4">
           
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Username *</label>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">Username *</label>
             <input type="text" [(ngModel)]="username" name="username" required
                    placeholder="e.g. manager or developer"
-                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600">
+                   class="w-full theme-input rounded-lg px-3 py-2 text-xs focus:outline-none">
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Password *</label>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">Password *</label>
             <input type="password" [(ngModel)]="password" name="password" required
                    placeholder="••••••••"
-                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600">
+                   class="w-full theme-input rounded-lg px-3 py-2 text-xs focus:outline-none">
           </div>
 
           <!-- Quick Test Credentials Chips -->
-          <div class="bg-slate-50 rounded-lg p-2.5 border border-slate-200/80 text-[11px] space-y-1.5">
-            <span class="text-slate-500 font-semibold block text-[10px] uppercase tracking-wider">Quick Fill Test Accounts:</span>
+          <div class="theme-inner rounded-lg p-2.5 border theme-border-subtle text-[11px] space-y-1.5">
+            <span class="theme-text-muted font-semibold block text-[10px] uppercase tracking-wider">Quick Fill Test Accounts:</span>
             <div class="flex gap-2">
               <button type="button" (click)="fillCreds('manager', 'password123')"
-                      class="px-2.5 py-1 bg-white hover:bg-slate-100 text-indigo-700 border border-slate-200 rounded font-medium text-xs shadow-2xs">
+                      class="px-2.5 py-1 theme-btn-subtle text-indigo-400 border theme-border-subtle rounded font-medium text-xs cursor-pointer shadow-2xs">
                 👑 manager / password123
               </button>
               <button type="button" (click)="fillCreds('developer', 'password123')"
-                      class="px-2.5 py-1 bg-white hover:bg-slate-100 text-emerald-700 border border-slate-200 rounded font-medium text-xs shadow-2xs">
+                      class="px-2.5 py-1 theme-btn-subtle text-emerald-400 border theme-border-subtle rounded font-medium text-xs cursor-pointer shadow-2xs">
                 💻 developer / password123
               </button>
             </div>
           </div>
 
           <!-- Submit Buttons -->
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-            <button type="button" (click)="close.emit()" class="px-3.5 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium hover:bg-slate-200">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t theme-border-subtle">
+            <button type="button" (click)="close.emit()" class="px-3.5 py-1.5 theme-btn-subtle rounded-lg text-xs font-medium cursor-pointer">
               Cancel
             </button>
             <button type="submit" [disabled]="!username || !password || loading"
-                    class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5">
+                    class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5 cursor-pointer">
               <span *ngIf="loading" class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               Sign In
             </button>

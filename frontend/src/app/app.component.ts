@@ -7,6 +7,7 @@ import { EditDeadlineModalComponent } from './components/edit-deadline-modal/edi
 import { ReassignModalComponent } from './components/reassign-modal/reassign-modal.component';
 import { AuthService } from './services/auth.service';
 import { TaskService } from './services/task.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ import { TaskService } from './services/task.service';
     ReassignModalComponent
   ],
   template: `
-    <div class="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+    <div style="background-color: var(--bg-app); color: var(--text-body);" 
+         class="min-h-screen flex flex-col font-sans transition-colors duration-200">
       
       <!-- Top Corporate Navigation Header -->
       <app-header (openCreateModal)="showCreateModal = true"></app-header>
@@ -31,10 +33,12 @@ import { TaskService } from './services/task.service';
       </main>
 
       <!-- Footer Bar -->
-      <footer *ngIf="authService.isAuthenticated()" class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+      <footer *ngIf="authService.isAuthenticated()" 
+              style="background-color: var(--bg-card); border-color: var(--border-primary); color: var(--text-muted);"
+              class="border-t py-3 text-center text-xs transition-colors duration-200">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between px-6 gap-2">
-          <span>Priora Enterprise • Built with Spring Boot 3 & Angular 16 Signals</span>
-          <span class="text-slate-400">Oracle Database / H2 Compatibility Mode</span>
+          <span>Priora Enterprise &bull; Self-Prioritizing Task Board powered by Mathematical Gravity</span>
+          <span style="color: var(--text-muted);">PostgreSQL &bull; Spring Boot 3 &bull; Angular 16</span>
         </div>
       </footer>
 
@@ -52,6 +56,7 @@ export class AppComponent {
   constructor(
     public authService: AuthService,
     public taskService: TaskService,
+    public themeService: ThemeService,
     private router: Router
   ) {
     if (!this.authService.isAuthenticated()) {

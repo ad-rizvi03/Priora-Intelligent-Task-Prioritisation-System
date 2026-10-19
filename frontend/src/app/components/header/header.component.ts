@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TaskService } from '../../services/task.service';
+import { ThemeSwitcherComponent } from '../theme-switcher/theme-switcher.component';
 
 /**
  * Corporate Minimalist Navigation Header Component.
@@ -11,7 +12,7 @@ import { TaskService } from '../../services/task.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ThemeSwitcherComponent],
   template: `
     <!-- Developer & Tester Ping Notification Stream Banner -->
     <div *ngIf="!authService.hasLeadPermissions() && taskService.developerNotifications().length > 0" 
@@ -27,7 +28,9 @@ import { TaskService } from '../../services/task.service';
       </div>
     </div>
 
-    <header *ngIf="authService.isAuthenticated()" class="bg-white border-b border-slate-200 sticky top-0 z-30 px-6 py-3 shadow-2xs">
+    <header *ngIf="authService.isAuthenticated()" 
+            style="background-color: var(--bg-header); border-color: var(--border-primary);"
+            class="border-b sticky top-0 z-30 px-6 py-3 shadow-2xs backdrop-blur-md transition-colors">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
         <!-- Brand & Main Navigation Links -->
@@ -37,37 +40,44 @@ import { TaskService } from '../../services/task.service';
               P
             </div>
             <div>
-              <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-tight">Priora</h1>
-              <p class="text-[10px] text-slate-500 font-normal">Enterprise Task Priority Engine</p>
+              <h1 style="color: var(--text-heading);" class="text-lg font-bold tracking-tight leading-tight transition-colors">Priora</h1>
+              <p style="color: var(--text-muted);" class="text-[10px] font-normal transition-colors">Enterprise Task Priority Engine</p>
             </div>
           </a>
 
           <!-- Router Navigation Tabs -->
-          <nav class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
-            <a routerLink="/canvas" routerLinkActive="bg-white text-indigo-700 shadow-2xs font-bold"
-               class="px-3 py-1.5 rounded-lg text-slate-600 font-medium hover:text-slate-900 transition-all">
+          <nav style="background-color: var(--bg-card-subtle); border-color: var(--border-primary);"
+               class="flex items-center gap-1 p-1 rounded-xl border text-xs transition-colors">
+            <a routerLink="/canvas" routerLinkActive="active-nav-tab"
+               style="color: var(--text-body);"
+               class="px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80">
               Canvas
             </a>
 
-            <a *ngIf="authService.hasLeadPermissions()" routerLink="/settings" routerLinkActive="bg-white text-indigo-700 shadow-2xs font-bold"
-               class="px-3 py-1.5 rounded-lg text-slate-600 font-medium hover:text-slate-900 transition-all">
+            <a *ngIf="authService.hasLeadPermissions()" routerLink="/settings" routerLinkActive="active-nav-tab"
+               style="color: var(--text-body);"
+               class="px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80">
               Settings
             </a>
 
             <!-- Project Manager Only: User Provisioning -->
-            <a *ngIf="authService.isProjectManager()" routerLink="/users" routerLinkActive="bg-white text-purple-700 shadow-2xs font-bold"
-               class="px-3 py-1.5 rounded-lg text-slate-600 font-medium hover:text-slate-900 transition-all">
+            <a *ngIf="authService.isProjectManager()" routerLink="/users" routerLinkActive="active-nav-tab"
+               style="color: var(--text-body);"
+               class="px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80">
               Users
             </a>
           </nav>
         </div>
 
         <!-- Right Side User Profile & Actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2.5">
           
+          <!-- Dynamic Theme Switcher -->
+          <app-theme-switcher></app-theme-switcher>
+
           <!-- Team Lead / Project Manager Only: Create Task Button -->
           <button *ngIf="authService.hasLeadPermissions()" (click)="openCreateModal.emit()"
-                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs px-3.5 py-2 rounded-lg shadow-2xs transition-all flex items-center gap-1.5">
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs px-3.5 py-2 rounded-lg shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -77,15 +87,16 @@ import { TaskService } from '../../services/task.service';
           <!-- User Profile Badge (Clicking opens /profile) -->
           <a routerLink="/profile" 
              title="View Profile & Change Password"
-             class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg transition-all group">
+             style="background-color: var(--bg-card-subtle); border-color: var(--border-primary);"
+             class="flex items-center gap-2 border px-3 py-1 rounded-lg transition-all group shrink-0">
             <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-[10px]">
               {{ authService.currentUser()?.fullName?.charAt(0) || 'U' }}
             </div>
-            <div class="text-left">
-              <div class="text-xs font-semibold text-slate-800 group-hover:text-indigo-600 leading-tight transition-colors">
+            <div class="text-left hidden sm:block">
+              <div style="color: var(--text-heading);" class="text-xs font-semibold leading-tight transition-colors">
                 {{ authService.currentUser()?.fullName }}
               </div>
-              <div class="text-[9px] font-semibold text-slate-500 uppercase">
+              <div style="color: var(--text-muted);" class="text-[9px] font-semibold uppercase">
                 {{ getRoleLabel(authService.currentUser()?.role) }}
               </div>
             </div>
@@ -94,7 +105,8 @@ import { TaskService } from '../../services/task.service';
           <!-- Explicit Sign Out Button -->
           <button (click)="onSignOut()"
                   title="Sign Out"
-                  class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium border border-slate-200 transition-all">
+                  style="background-color: var(--bg-card-subtle); border-color: var(--border-primary); color: var(--text-heading);"
+                  class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer hover:opacity-80 shrink-0">
             Sign Out
           </button>
 

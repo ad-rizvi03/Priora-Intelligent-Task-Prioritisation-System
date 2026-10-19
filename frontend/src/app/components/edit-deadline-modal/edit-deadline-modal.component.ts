@@ -13,34 +13,34 @@ import { TaskService } from '../../services/task.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-5 border border-slate-200">
+    <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div class="theme-modal rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 border theme-border">
         
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center justify-between border-b theme-border-subtle pb-3">
           <div>
-            <h2 class="text-base font-bold text-slate-900 tracking-tight">Adjust Task Deadline</h2>
-            <p class="text-xs text-slate-500 font-normal">Task #{{ task.id }} - {{ task.title }}</p>
+            <h2 class="text-base font-bold theme-text-heading tracking-tight">Adjust Task Deadline</h2>
+            <p class="text-xs theme-text-muted font-normal">Task #{{ task.id }} - {{ task.title }}</p>
           </div>
-          <button (click)="close.emit()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">
+          <button (click)="close.emit()" class="theme-text-muted hover:text-white text-lg font-bold cursor-pointer">
             &times;
           </button>
         </div>
 
         <form (ngSubmit)="onSubmit()" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">New Target Deadline *</label>
+            <label class="block text-xs font-semibold theme-text-heading mb-1">New Target Deadline *</label>
             <input type="datetime-local" [(ngModel)]="deadlineInput" name="deadlineInput" required [min]="minDateTimeInput"
-                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white">
-            <span class="text-[10px] text-slate-400 block mt-0.5">Past dates prior to current date are disabled</span>
+                   class="w-full theme-input rounded-xl px-3.5 py-2 text-xs focus:outline-none">
+            <span class="text-[10px] theme-text-muted block mt-0.5">Past dates prior to current date are disabled</span>
           </div>
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t theme-border-subtle">
             <button type="button" (click)="close.emit()"
-                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-medium transition-all">
+                    class="px-4 py-2 theme-btn-subtle rounded-xl text-xs font-medium transition-all cursor-pointer">
               Cancel
             </button>
             <button type="submit" [disabled]="!deadlineInput || loading"
-                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2">
+                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer">
               <span *ngIf="loading" class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               Update Deadline
             </button>

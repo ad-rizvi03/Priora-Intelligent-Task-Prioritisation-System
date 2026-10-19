@@ -38,10 +38,10 @@ import { SprintSimulatorModalComponent } from '../sprint-simulator-modal/sprint-
       <ng-container *ngIf="!taskService.loading()">
 
         <!-- Executive Action Bar: What-If Simulator Trigger -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b theme-border-subtle">
           <div>
-            <h1 class="text-xl font-black text-slate-900 tracking-tight">Gravitational Priority Canvas</h1>
-            <p class="text-xs text-slate-500 font-medium">Continuous Workload Defense &bull; Dynamic Orbit Mechanics</p>
+            <h1 class="text-xl font-black theme-text-heading tracking-tight">Gravitational Priority Canvas</h1>
+            <p class="text-xs theme-text-muted font-medium">Continuous Workload Defense &bull; Dynamic Orbit Mechanics</p>
           </div>
           <button (click)="taskService.openSimulationModal()"
                   class="px-4 py-2 bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto">
@@ -269,22 +269,22 @@ import { SprintSimulatorModalComponent } from '../sprint-simulator-modal/sprint-
 
         <!-- ZONE 1: FOCUS ZONE (Score >= 80.0) -->
         <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-indigo-100 pb-3">
+          <div class="flex items-center justify-between border-b theme-border-subtle pb-3">
             <div class="flex items-center gap-3">
               <div class="w-3 h-3 rounded-full bg-indigo-600"></div>
-              <h2 class="text-lg font-bold text-slate-900 tracking-tight">Focus Zone</h2>
-              <span class="text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+              <h2 class="text-lg font-bold theme-text-heading tracking-tight">Focus Zone</h2>
+              <span class="text-xs font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-0.5 rounded-full">
                 Score &ge; 80.0
               </span>
             </div>
-            <span class="text-xs font-semibold text-slate-500">
+            <span class="text-xs font-semibold theme-text-muted">
               {{ taskService.focusZoneTasks().length }} Critical Tasks
             </span>
           </div>
 
           <!-- Empty Focus State -->
           <div *ngIf="taskService.focusZoneTasks().length === 0" 
-               class="bg-white rounded-2xl p-8 text-center border border-dashed border-slate-200 text-slate-400 text-xs font-medium">
+               class="theme-card rounded-2xl p-8 text-center border border-dashed theme-border-subtle theme-text-muted text-xs font-medium">
             No critical tasks in the Focus Zone.
           </div>
 
@@ -297,22 +297,22 @@ import { SprintSimulatorModalComponent } from '../sprint-simulator-modal/sprint-
 
         <!-- ZONE 2: DRIFTING ZONE (Score 40.0 - 80.0) -->
         <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center justify-between border-b theme-border-subtle pb-3">
             <div class="flex items-center gap-3">
               <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-              <h2 class="text-lg font-bold text-slate-900 tracking-tight">Drifting Zone</h2>
-              <span class="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
+              <h2 class="text-lg font-bold theme-text-heading tracking-tight">Drifting Zone</h2>
+              <span class="text-xs font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
                 Score 40.0 - 80.0
               </span>
             </div>
-            <span class="text-xs font-semibold text-slate-500">
+            <span class="text-xs font-semibold theme-text-muted">
               {{ taskService.driftingZoneTasks().length }} Active Tasks
             </span>
           </div>
 
           <!-- Empty Drifting State -->
           <div *ngIf="taskService.driftingZoneTasks().length === 0" 
-               class="bg-white rounded-2xl p-8 text-center border border-dashed border-slate-200 text-slate-400 text-xs font-medium">
+               class="theme-card rounded-2xl p-8 text-center border border-dashed theme-border-subtle theme-text-muted text-xs font-medium">
             No active tasks in the Drifting Zone.
           </div>
 
@@ -325,22 +325,22 @@ import { SprintSimulatorModalComponent } from '../sprint-simulator-modal/sprint-
 
         <!-- ZONE 3: ORBIT ZONE (Score < 40.0 / Completed Tasks) -->
         <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center justify-between border-b theme-border-subtle pb-3">
             <div class="flex items-center gap-3">
               <div class="w-3 h-3 rounded-full bg-slate-400"></div>
-              <h2 class="text-lg font-bold text-slate-900 tracking-tight">Orbit Zone</h2>
-              <span class="text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">
+              <h2 class="text-lg font-bold theme-text-heading tracking-tight">Orbit Zone</h2>
+              <span class="text-xs font-semibold theme-text-muted theme-subtle border theme-border-subtle px-2.5 py-0.5 rounded-full">
                 Score &lt; 40.0 / Done
               </span>
             </div>
-            <span class="text-xs font-semibold text-slate-500">
+            <span class="text-xs font-semibold theme-text-muted">
               {{ taskService.orbitZoneTasks().length }} Backlog / Completed Tasks
             </span>
           </div>
 
           <!-- Empty Orbit State -->
           <div *ngIf="taskService.orbitZoneTasks().length === 0" 
-               class="bg-white rounded-2xl p-8 text-center border border-dashed border-slate-200 text-slate-400 text-xs font-medium">
+               class="theme-card rounded-2xl p-8 text-center border border-dashed theme-border-subtle theme-text-muted text-xs font-medium">
             No backlog or completed tasks in the Orbit Zone.
           </div>
 
